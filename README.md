@@ -28,8 +28,8 @@ ssh-copy-id -i ~/.ssh/ansible.pub vagrant@node-3
 ```
 
 ## First ANSIBLE command
-```
-ansible all --key-file ~/.ssh/ansible -i inventory -m ping -u vagrant
+´ansible all --key-file ~/.ssh/ansible -i inventory -m ping -u vagrant´
+```json
 node-3 | SUCCESS => {
     "ansible_facts": {
         "discovered_interpreter_python": "/usr/bin/python"
