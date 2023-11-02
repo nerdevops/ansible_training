@@ -1,6 +1,9 @@
 # ansible_training
 Basic Ansible Learning Project
 
+ **Cenario**
+     ![The Cenario](/img/cenario.png)
+
 1. First create the VM's
 ````
 cd /ubuntu
@@ -28,7 +31,7 @@ ssh-copy-id -i ~/.ssh/ansible.pub vagrant@node-3
 ```
 
 5. First ANSIBLE command
-*ansible all --key-file ~/.ssh/ansible -i inventory -m ping -u vagrant*
+> ansible all --key-file ~/.ssh/ansible -i inventory -m ping -u vagrant
 ```json
 node-3 | SUCCESS => {
     "ansible_facts": {
