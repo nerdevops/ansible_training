@@ -5,6 +5,7 @@ Basic Ansible Learning Project
      ![The Cenario](/img/cenario.png)
 
 **Requirements**:
+
     - Vagrant
     - Virtualbox/VMware
     - WSL / Native Linux / Mac
