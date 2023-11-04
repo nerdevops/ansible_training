@@ -67,7 +67,7 @@ node-1 | SUCCESS => {
 ```
 6. Ansible gather_facts
 ```console
-> ansible all -m gather_facts --limit node-1
+ansible all -m gather_facts --limit node-1
 ```
 > This module is automatically called by playbooks to gather useful variables about remote hosts that can be used in playbooks.
 
