@@ -5,15 +5,15 @@ Basic Ansible Learning Project
      ![The Cenario](/img/cenario.png)
 
 1. First create the VM's
-````
+```console
 cd /ubuntu
 vagrant up
-````
+```
 
 2. Create ssh-key to login on the target-machines
-````
+```console
 ssh-keygen -t ed25519 -C "Ansible"
-````
+```
 
 3. Edit hosts file of the "ManagerHost" In my case WLS
 ```
@@ -24,7 +24,7 @@ ssh-keygen -t ed25519 -C "Ansible"
 ```
 
 4. Install on each of the machines
-```
+```console
 ssh-copy-id -i ~/.ssh/ansible.pub vagrant@node-1
 ssh-copy-id -i ~/.ssh/ansible.pub vagrant@node-2
 ssh-copy-id -i ~/.ssh/ansible.pub vagrant@node-3
@@ -56,16 +56,19 @@ node-1 | SUCCESS => {
 }
 ```
 6. Ansible gather_facts
+```console
 > ansible all -m gather_facts --limit node-1
-
+```
 7. ansible adhoc commands
 > An Ansible ad hoc command uses the /usr/bin/ansible command-line tool to automate a single task on one or more managed nodes.
 "Privilege permitions for exec commands on target machines.
 Context: For the apt module we're using is possible to look at the official DOC for it
 Here is the link: https://docs.ansible.com/ansible/2.9/modules/apt_module.html"
 
-NOK:
+**NOK:**
+```console
 ➜  ansible_training git:(main) ✗ ansible all -m apt -a update_cache=true
+```
 ```json
 node-3 | FAILED! => {
     "ansible_facts": {
@@ -89,7 +92,9 @@ node-2 | FAILED! => {
     "msg": "Failed to lock apt for exclusive operation: Failed to lock /var/lib/apt/lists/lock"
 ```
 >> To work we need to add --become and --ask-become-me-pass
+```console
 ➜  ansible_training git:(main) ✗ ansible all -m apt -a update_cache=true --become --ask-become-pass
+```
 ```json
 BECOME password:
  node-2 | CHANGED => {
