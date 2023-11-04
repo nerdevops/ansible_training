@@ -1,0 +1,19 @@
+---
+
+- hosts: all        # Run in all Hosts on inventary
+  become: true      # Run with sudo privileges
+  tasks:            # The tasks to run 
+
+  - name: Update Repository Index        # Simple indicative name
+    apt:                                 # Module apt
+      update_cache: yes                  # update index Cache
+
+  - name: Remove apache2 package        # Indicative Name
+    apt:                                 # Module APT
+      name: apache2                      # The package
+      state: absent                      # Remove the package
+
+  - name: Remove php Support for Apache     # Indicative Name
+    apt:                                 # Module APT
+      name: libapache2-mod-php5          # The package
+      state: absent                      # Remove the package

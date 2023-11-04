@@ -58,9 +58,11 @@ node-1 | SUCCESS => {
 6. Ansible gather_facts
 > ansible all -m gather_facts --limit node-1
 
-7. Privilege permitions for exec commands on target machines.
+7. ansible adhoc commands
+> An Ansible ad hoc command uses the /usr/bin/ansible command-line tool to automate a single task on one or more managed nodes.
+"Privilege permitions for exec commands on target machines.
 Context: For the apt module we're using is possible to look at the official DOC for it
-Here is the link: https://docs.ansible.com/ansible/2.9/modules/apt_module.html
+Here is the link: https://docs.ansible.com/ansible/2.9/modules/apt_module.html"
 
 NOK:
 ➜  ansible_training git:(main) ✗ ansible all -m apt -a update_cache=true
@@ -121,3 +123,44 @@ node-3 | CHANGED => {
 
 >> To upgrade the system 
 ➜  ansible all -m apt -a "upgrade=dist" --become
+
+8. Playbooks
+> A playbook is a multiple-machine deployment system, reusable and repeatable
+```console
+➜  ansible_training git:(main) ✗ touch install_apache.yml
+```
+```yaml
+---
+
+- hosts: all        # Run in all Hosts on inventary
+  become: true      # Run with sudo privileges
+  tasks:            # The tasks to run 
+
+  - name: Update Repository Index        # Simple indicative name
+    apt:                                 # Module apt
+      update_cache: yes                  # update index Cache
+
+  - name: install apache2 package        # Indicative Name
+    apt:                                 # Module APT
+      name: apache2                      # The module to install
+```
+```console
+➜  ansible_training git:(main) ✗ ansible-playbook install_apache.yml
+
+PLAY [all] ****************************************************************************************************************
+
+TASK [Gathering Facts] ****************************************************************************************************
+ok: [node-1]
+ok: [node-3]
+ok: [node-2]
+
+TASK [install apache2 package] ********************************************************************************************
+changed: [node-2]
+changed: [node-3]
+changed: [node-1]
+
+PLAY RECAP ****************************************************************************************************************
+node-1                     : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+node-2                     : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+node-3                     : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+```
