@@ -4,6 +4,11 @@ Basic Ansible Learning Project
  **Cenario**
      ![The Cenario](/img/cenario.png)
 
+**Requirements**:
+    - Vagrant
+    - Virtualbox/VMware
+    - WSL / Native Linux / Mac
+
 1. First create the VM's
 ```console
 cd /ubuntu
@@ -12,7 +17,7 @@ vagrant up
 
 2. Create ssh-key to login on the target-machines
 ```console
-ssh-keygen -t ed25519 -C "Ansible"
+ssh-keygen -t ed25519 -C "Ansible" -f ~/.ssh/ansible
 ```
 
 3. Edit hosts file of the "ManagerHost" In my case WLS
@@ -23,15 +28,19 @@ ssh-keygen -t ed25519 -C "Ansible"
 192.168.1.121 node-1
 ```
 
-4. Install on each of the machines
+4. Install ansible on Controler machine and add ssh on each of the machines
 ```console
-ssh-copy-id -i ~/.ssh/ansible.pub vagrant@node-1
-ssh-copy-id -i ~/.ssh/ansible.pub vagrant@node-2
-ssh-copy-id -i ~/.ssh/ansible.pub vagrant@node-3
+apt install ansible -y &&
+ssh-copy-id -i ~/.ssh/ansible.pub vagrant@node-1 &&
+ssh-copy-id -i ~/.ssh/ansible.pub vagrant@node-2 &&
+ssh-copy-id -i ~/.ssh/ansible.pub vagrant@node-3 &&
 ```
 
 5. First ANSIBLE command
-> ansible all --key-file ~/.ssh/ansible -i inventory -m ping -u vagrant
+```console
+ansible all --key-file ~/.ssh/ansible -i inventory -m ping -u vagrant
+```
+
 ```json
 node-3 | SUCCESS => {
     "ansible_facts": {
@@ -59,6 +68,8 @@ node-1 | SUCCESS => {
 ```console
 > ansible all -m gather_facts --limit node-1
 ```
+> This module is automatically called by playbooks to gather useful variables about remote hosts that can be used in playbooks.
+
 7. ansible adhoc commands
 > An Ansible ad hoc command uses the /usr/bin/ansible command-line tool to automate a single task on one or more managed nodes.
 "Privilege permitions for exec commands on target machines.
@@ -67,7 +78,7 @@ Here is the link: https://docs.ansible.com/ansible/2.9/modules/apt_module.html"
 
 **NOK:**
 ```console
-➜  ansible_training git:(main) ✗ ansible all -m apt -a update_cache=true
+ansible all -m apt -a update_cache=true
 ```
 ```json
 node-3 | FAILED! => {
@@ -93,7 +104,7 @@ node-2 | FAILED! => {
 ```
 >> To work we need to add --become and --ask-become-me-pass
 ```console
-➜  ansible_training git:(main) ✗ ansible all -m apt -a update_cache=true --become --ask-become-pass
+ansible all -m apt -a update_cache=true --become --ask-become-pass
 ```
 ```json
 BECOME password:
@@ -124,15 +135,19 @@ node-3 | CHANGED => {
 ```
 > The command bellow we can install vim-nox editor, vagrant does not has sudo pass
 > So you can use the command without --ask-become-pass.
-➜  ansible_training git:(main) ✗ ansible all -m apt -a name=vim-nox --become
+```console
+ansible all -m apt -a name=vim-nox --become
+```
 
 >> To upgrade the system 
-➜  ansible all -m apt -a "upgrade=dist" --become
+```console
+ansible all -m apt -a "upgrade=dist" --become
+```
 
 8. Playbooks
 > A playbook is a multiple-machine deployment system, reusable and repeatable
 ```console
-➜  ansible_training git:(main) ✗ touch install_apache.yml
+touch install_apache.yml
 ```
 ```yaml
 ---
@@ -150,7 +165,7 @@ node-3 | CHANGED => {
       name: apache2                      # The module to install
 ```
 ```console
-➜  ansible_training git:(main) ✗ ansible-playbook install_apache.yml
+ansible-playbook install_apache.yml
 
 PLAY [all] ****************************************************************************************************************
 
