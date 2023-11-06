@@ -1,6 +1,11 @@
+[web_servers]
 node-1
 node-2
+node-5
+
+[db_servers]
 node-3
 node-4
-node-5
+
+[file_servers]
 node-6

@@ -185,3 +185,20 @@ node-1                     : ok=2    changed=1    unreachable=0    failed=0    s
 node-2                     : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 node-3                     : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 ```
+
+### Hosts Groups
+9.We can bind hosts by groups, like the example bellow:
+
+```console
+[web_servers]
+node-1
+node-2
+
+[db_servers]
+node-3
+node-4
+
+[file_servers]
+node-5
+node-6
+```
