@@ -1,0 +1,11 @@
+Vagrant.configure("2") do |config|
+  (4..6).each do |i|  # For loop
+    config.vm.synced_folder '.', '/vagrant', disabled: true # Disable folder sync with windows
+    config.vm.define "node-#{i}" do |node|
+      node.vm.box = "centos/7" # Image
+      node.vm.hostname = "node-#{i}" # Loop hostname
+      node.vm.network "public_network", ip: "192.168.1.12#{i}" # Static IP
+      node.vm.provision "shell", inline: "echo hello from node #{i}" # Random comand after start
+    end
+  end
+end
