@@ -4,16 +4,21 @@
   become: true      # Run with sudo privileges
   tasks:            # The tasks to run 
 
-  - name: Update Repository Index        # Simple indicative name
-    apt:                                 # Module apt
-      update_cache: yes                  # update index Cache
-
-  - name: Remove apache2 package        # Indicative Name
+  - name: update and install apache2, php package for Ubuntu      # Indicative Name
     apt:                                 # Module APT
-      name: apache2                      # The package
-      state: absent                      # Remove the package
+      name:         
+        - apache2   
+        - libapache2-mod-php5         # The package
+      state: absent  
+      update_cache: yes                     # Latest version
+    when: ansible_distribution == 'Ubuntu'  # Remove the package
+# CENTOS DISTRO
 
-  - name: Remove php Support for Apache     # Indicative Name
-    apt:                                 # Module APT
-      name: libapache2-mod-php5          # The package
-      state: absent                      # Remove the package
+  - name: update and install httpd, php package for CentOS        # Indicative Name
+    dnf:                                 # Module APT
+      name:
+        - httpd
+        - php                     # The package
+      state: absent 
+      update_cache: yes                       # Latest version
+    when: ansible_distribution == 'CentOS'
