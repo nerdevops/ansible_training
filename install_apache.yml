@@ -5,37 +5,23 @@
   tasks:            # The tasks to run 
 
 # UBUNTU DISTRO
-  - name: Update Repository Index        # Simple indicative name
-    apt:                                 # Module apt
-      update_cache: yes                  # update index Cache
-    when: ansible_distribution == 'Ubuntu'
 
-  - name: install apache2 package        # Indicative Name
+  - name: update and install apache2, php package for Ubuntu      # Indicative Name
     apt:                                 # Module APT
-      name: apache2                      # The package
-      state: latest                      # Latest version
-    when: ansible_distribution == 'Ubuntu'
-
-  - name: add php Support for Apache     # Simple indicative name
-    apt:                                 # Module apt
-      name: libapache2-mod-php5          # The package
-      state: latest                      # Latest version
+      name:         
+        - apache2   
+        - libapache2-mod-php5         # The package
+      state: latest  
+      update_cache: yes                     # Latest version
     when: ansible_distribution == 'Ubuntu'
 
 # CENTOS DISTRO
-  - name: Update Repository Index        # Simple indicative name
-    dnf:                                 # Module apt
-      update_cache: yes                  # update index Cache
-    when: ansible_distribution == 'CentOS'
 
-  - name: install apache2 package        # Indicative Name
+  - name: update and install httpd, php package for CentOS        # Indicative Name
     dnf:                                 # Module APT
-      name: httpd.x86_64                      # The package
-      state: latest                      # Latest version
-    when: ansible_distribution == 'CentOS'
-
-  - name: add php Support for Apache     # Simple indicative name
-    dnf:                                 # Module apt
-      name: php.x86_64          # The package
-      state: latest                      # Latest version
+      name:
+        - httpd
+        - php                     # The package
+      state: latest 
+      update_cache: yes                       # Latest version
     when: ansible_distribution == 'CentOS'
