@@ -1,0 +1,44 @@
+---
+
+- hosts: all        # Run in all Hosts on inventary
+  become: true      # Run with sudo privileges
+  tasks:            # The tasks to run 
+
+# Centos
+  - name: Install Updates (CentOS)
+    dnf:
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution == "CentOS"
+
+# Ubuntu
+  - name: Install Update (Ubuntu)
+    apt:
+      upgrade: dist
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+
+
+- hosts: web_servers
+  become: true
+  tasks:
+
+# UBUNTU DISTRO
+
+  - name: update and install apache2, php package for Ubuntu      # Indicative Name
+    apt:                                 # Module APT
+      name:
+        - apache2   
+        - libapache2-mod-php5         # The package
+      state: latest  
+    when: ansible_distribution == 'Ubuntu'
+
+# CENTOS DISTRO
+
+  - name: update and install httpd, php package for CentOS        # Indicative Name
+    dnf:                                 # Module APT
+      name:
+        - httpd
+        - php                     # The package
+      state: latest 
+    when: ansible_distribution == 'CentOS'
