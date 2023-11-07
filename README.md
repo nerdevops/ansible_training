@@ -202,3 +202,10 @@ node-4
 node-5
 node-6
 ```
+
+10. Now is possible to group tasks 
+```console
+ansible db_servers -m ping
+ansible web_servers -m ping
+ansible file_servers -m ping
+```
