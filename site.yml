@@ -2,7 +2,7 @@
 
 - hosts: all        # Run in all Hosts on inventary
   become: true      # Run with sudo privileges
-  tasks:            # The tasks to run 
+  pre_tasks:            # The tasks to run 
 
 # Centos
   - name: Install Updates (CentOS)
@@ -23,7 +23,7 @@
   become: true
   tasks:
 
-# UBUNTU DISTRO
+# Install WebServers packages
 
   - name: update and install apache2, php package for Ubuntu      # Indicative Name
     apt:                                 # Module APT
@@ -33,8 +33,6 @@
       state: latest  
     when: ansible_distribution == 'Ubuntu'
 
-# CENTOS DISTRO
-
   - name: update and install httpd, php package for CentOS        # Indicative Name
     dnf:                                 # Module APT
       name:
@@ -42,3 +40,30 @@
         - php                     # The package
       state: latest 
     when: ansible_distribution == 'CentOS'
+
+# Install MariaDB packages
+
+- hosts: db_servers
+  become: true
+  tasks:
+
+  - name: Install MariDB package
+    dnf: 
+      name: mariadb-server
+      state: latest
+    when: ansible_distribution ==  'CentOS'
+
+  - name: Install MariDB package
+    apt: 
+      name: mariadb-server
+      state: latest
+    when: ansible_distribution ==  'Ubuntu'
+
+- hosts: file_servers
+  become: true
+  tasks:
+
+  - name: Install samba package
+    package: 
+      name: samba
+      state: latest
