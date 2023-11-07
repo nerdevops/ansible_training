@@ -209,3 +209,98 @@ ansible db_servers -m ping
 ansible web_servers -m ping
 ansible file_servers -m ping
 ```
+### Tags
+11. Tags are metadata you canb attach to the tasks in an Ansible playbook
+```yaml
+  - name: Install MariDB package
+    tags: mariadb,db,ubuntu
+    apt: 
+      name: mariadb-server
+      state: latest
+    when: ansible_distribution ==  'Ubuntu'
+```
+> How to list Tags available
+```console
+ansible-playbook --list-tags site.yml
+
+playbook: site.yml
+
+  play #1 (all): all    TAGS: []
+      TASK TAGS: [always]
+
+  play #2 (web_servers): web_servers    TAGS: []
+      TASK TAGS: [apache, apache2, centos, httpd, ubuntu]
+
+  play #3 (db_servers): db_servers      TAGS: []
+      TASK TAGS: [centos, db, mariadb, ubuntu]
+
+  play #4 (file_servers): file_servers  TAGS: []
+      TASK TAGS: [samba]
+```
+> Now we'll target centos only
+```console
+ansible-playbook --tags centos site.yml 
+
+PLAY [all] *******************************************************************************************************************************************************
+
+TASK [Gathering Facts] *******************************************************************************************************************************************
+ok: [node-4]
+ok: [node-5]
+ok: [node-3]
+ok: [node-1]
+ok: [node-2]
+ok: [node-6]
+
+TASK [Install Updates (CentOS)] **********************************************************************************************************************************
+skipping: [node-1]
+skipping: [node-2]
+skipping: [node-3]
+ok: [node-5]
+ok: [node-4]
+ok: [node-6]
+
+TASK [Install Update (Ubuntu)] ***********************************************************************************************************************************
+skipping: [node-5]
+skipping: [node-4]
+skipping: [node-6]
+ok: [node-3]
+ok: [node-1]
+ok: [node-2]
+
+PLAY [web_servers] ***********************************************************************************************************************************************
+
+TASK [Gathering Facts] *******************************************************************************************************************************************
+ok: [node-5]
+ok: [node-2]
+ok: [node-1]
+
+TASK [update and install httpd, php package for CentOS] **********************************************************************************************************
+skipping: [node-1]
+skipping: [node-2]
+ok: [node-5]
+
+PLAY [db_servers] ************************************************************************************************************************************************
+
+TASK [Gathering Facts] *******************************************************************************************************************************************
+ok: [node-4]
+ok: [node-3]
+
+TASK [Install MariDB package] ************************************************************************************************************************************
+skipping: [node-3]
+ok: [node-4]
+
+PLAY [file_servers] **********************************************************************************************************************************************
+
+TASK [Gathering Facts] *******************************************************************************************************************************************
+ok: [node-6]
+
+PLAY RECAP *******************************************************************************************************************************************************
+node-1                     : ok=3    changed=0    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+node-2                     : ok=3    changed=0    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+node-3                     : ok=3    changed=0    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+node-4                     : ok=4    changed=0    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+node-5                     : ok=4    changed=0    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+node-6                     : ok=3    changed=0    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0 
+```
+>> You can run tasks plays on specifics tags listed on the first command.
+>> If you want to use multiple tags make sure to use double quotes: "samba,db,httpd"

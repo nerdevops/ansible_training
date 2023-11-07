@@ -6,6 +6,7 @@
 
 # Centos
   - name: Install Updates (CentOS)
+    tags: always
     dnf:
       update_only: yes
       update_cache: yes
@@ -13,6 +14,7 @@
 
 # Ubuntu
   - name: Install Update (Ubuntu)
+    tags: always
     apt:
       upgrade: dist
       update_cache: yes
@@ -26,6 +28,7 @@
 # Install WebServers packages
 
   - name: update and install apache2, php package for Ubuntu      # Indicative Name
+    tags: apache,apache2,ubuntu
     apt:                                 # Module APT
       name:
         - apache2   
@@ -34,6 +37,7 @@
     when: ansible_distribution == 'Ubuntu'
 
   - name: update and install httpd, php package for CentOS        # Indicative Name
+    tags: httpd, centos, apache
     dnf:                                 # Module APT
       name:
         - httpd
@@ -48,12 +52,14 @@
   tasks:
 
   - name: Install MariDB package
+    tags: mariadb,db,centos
     dnf: 
       name: mariadb-server
       state: latest
     when: ansible_distribution ==  'CentOS'
 
   - name: Install MariDB package
+    tags: mariadb,db,ubuntu
     apt: 
       name: mariadb-server
       state: latest
@@ -64,6 +70,7 @@
   tasks:
 
   - name: Install samba package
+    tags: samba
     package: 
       name: samba
       state: latest
