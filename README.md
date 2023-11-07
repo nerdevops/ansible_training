@@ -304,3 +304,21 @@ node-6                     : ok=3    changed=0    unreachable=0    failed=0    s
 ```
 >> You can run tasks plays on specifics tags listed on the first command.
 >> If you want to use multiple tags make sure to use double quotes: "samba,db,httpd"
+
+### Ansible Copy module 
+12. You can use copy module to transfer files to target machines.
+```yaml
+  - name: Copy Default html file for site
+    tags: httpd, centos, apache
+    copy:
+      src: default_site.html
+      dest: /var/www/html/index.html
+      owner: root
+      group: root
+      mode: 0644
+```
+```console
+ansible-playboot site.yml
+```
+> At the example before the task will send the default_site.html to all webservers:
+![Alt text](img/image.png)
