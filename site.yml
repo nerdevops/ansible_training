@@ -44,6 +44,31 @@
         - php                     # The package
       state: latest 
     when: ansible_distribution == 'CentOS'
+
+  - name: Start httpd (CENTOS)
+    tags: httpd, centos, apache
+    service:
+      name: httpd
+      state: started
+      enabled: yes
+    when: ansible_distribution == 'CentOS'
+
+  - name: Change Email Addres for admin
+    tags: apache, centos, httpd
+    lineinfile:
+      path: /etc/httpd/conf/httpd.conf
+      regexp: '^ServerAdmin'
+      line: ServerAdmin test@gmail.com'
+    when: ansible_distribution == 'CentOS'
+    register: httpd     # Simple stores a variable to use in the next task
+
+  - name: restart httpd (CENTOS)
+    tags: apache, centos, httpd
+    service:
+      name: httpd
+      state: restarted
+    when: httpd.changed  # VAriable from register httpd
+
   - name: Copy Default html file for site
     tags: httpd, centos, apache
     copy:

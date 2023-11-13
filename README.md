@@ -4,6 +4,9 @@ Basic Ansible Learning Project
  **Cenario**
      ![The Cenario](/img/cenario.png)
 
+**source**
+    ![Source of the content](https://www.youtube.com/playlist?list=PLT98CRl2KxKEUHie1m24-wkyHpEsa4Y70)
+
 **Requirements**:
 
     - Vagrant
@@ -16,12 +19,12 @@ cd /ubuntu
 vagrant up
 ```
 
-2. Create ssh-key to login on the target-machines
+1. Create ssh-key to login on the target-machines
 ```console
 ssh-keygen -t ed25519 -C "Ansible" -f ~/.ssh/ansible
 ```
 
-3. Edit hosts file of the "ManagerHost" In my case WLS
+1. Edit hosts file of the "ManagerHost" In my case WLS
 ```
 # Ansible
 192.168.1.123 node-3
@@ -29,7 +32,7 @@ ssh-keygen -t ed25519 -C "Ansible" -f ~/.ssh/ansible
 192.168.1.121 node-1
 ```
 
-4. Install ansible on Controler machine and add ssh on each of the machines
+1. Install ansible on Controler machine and add ssh on each of the machines
 ```console
 apt install ansible -y &&
 ssh-copy-id -i ~/.ssh/ansible.pub vagrant@node-1 &&
@@ -37,7 +40,7 @@ ssh-copy-id -i ~/.ssh/ansible.pub vagrant@node-2 &&
 ssh-copy-id -i ~/.ssh/ansible.pub vagrant@node-3 &&
 ```
 
-5. First ANSIBLE command
+1. First ANSIBLE command
 ```console
 ansible all --key-file ~/.ssh/ansible -i inventory -m ping -u vagrant
 ```
@@ -322,3 +325,70 @@ ansible-playboot site.yml
 ```
 > At the example before the task will send the default_site.html to all webservers:
 ![Alt text](img/image.png)
+
+### Using service Module to start service
+13. Is possible to use "service" module to modify status of any service
+> Below we use httpd service as example
+```yaml
+  - name: Start httpd (CENTOS)
+    tags: httpd, centos, apache
+    service:
+      name: httpd
+      state: started
+      enabled: yes   # This the option to enable service on reboot.
+    when: ansible_distribution == 'CentOS'
+```
+```console
+TASK [Start httpd (CENTOS)] **************************************************************************************************************************************
+skipping: [node-1]
+skipping: [node-2]
+changed: [node-5]
+PLAY RECAP *******************************************************************************************************************************************************
+node-1                     : ok=5    changed=0    unreachable=0    failed=0    skipped=3    rescued=0    ignored=0   
+node-2                     : ok=5    changed=0    unreachable=0    failed=0    skipped=3    rescued=0    ignored=0   
+node-3                     : ok=4    changed=0    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+node-4                     : ok=4    changed=0    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+node-5                     : ok=6    changed=1    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+node-6                     : ok=4    changed=0    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0
+```
+> Note: use "enable: yes" to ensure the service starts on reboot
+
+### lineinfile and service module
+14. On the example below we can use the restart state of service module to restart the httpd service together with lineinfile module.
+```yaml
+  - name: Change Email Addres for admin
+    tags: apache, centos, httpd
+    lineinfile:
+      path: /etc/httpd/conf/httpd.conf
+      regexp: '^ServerAdmin'
+      line: ServerAdmin test@gmail.com'
+    when: ansible_distribution == 'CentOS'
+    register: httpd     # Simple stores a variable to use in the next task
+
+  - name: restart httpd (CENTOS)
+    tags: apache, centos, httpd
+    service:
+      name: httpd
+      state: restarted
+    when: httpd.changed  # VAriable from register httpd
+```
+```console
+TASK [Change Email Addres for admin] *****************************************************************************************************************************
+skipping: [node-1]
+skipping: [node-2]
+changed: [node-5]
+
+TASK [restart httpd (CENTOS)] ************************************************************************************************************************************
+skipping: [node-1]
+skipping: [node-2]
+changed: [node-5]
+
+PLAY RECAP *******************************************************************************************************************************************************
+node-1                     : ok=5    changed=0    unreachable=0    failed=0    skipped=5    rescued=0    ignored=0   
+node-2                     : ok=5    changed=0    unreachable=0    failed=0    skipped=5    rescued=0    ignored=0   
+node-3                     : ok=4    changed=0    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+node-4                     : ok=4    changed=0    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+node-5                     : ok=8    changed=2    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+node-6                     : ok=4    changed=0    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0 
+```
+> First we change a line on httpd.conf file the confirm that with register and restarted service on next task.
