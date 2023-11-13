@@ -514,3 +514,16 @@ roles/
   roles:
     - file_servers
 ```
+
+17. We can ping hosts in two ways comand-line and playbook
+
+```console
+ansible-playbook all -m ping
+```
+```yaml
+---
+- hosts: all
+  tasks:
+    - name: This is a ping to all Hosts
+      ping:
+```
