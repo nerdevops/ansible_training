@@ -1,0 +1,45 @@
+---
+
+- hosts: all        # Run in all Hosts on inventary
+  become: true      # Run with sudo privileges
+  pre_tasks:            # The tasks to run 
+
+# Centos
+  - name: Install Updates (CentOS)
+    tags: always
+    dnf:
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution == "CentOS"
+
+# Ubuntu
+  - name: Install Update (Ubuntu)
+    tags: always
+    apt:
+      upgrade: dist
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+
+- hosts: all
+  become: true
+  tasks:
+  - name: Create zuka user
+    tags: always
+    user:
+      user: zuka
+      group: root 
+
+  - name: Create an sshkey to zuka user
+    tags: always
+    authorized_key:
+      user: zuka
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOXbwVjReKVrC18mlTzbOFu5Ncz6VlwcjoaKjNTeWRs+ Ansible"
+
+  - name: add sudoers file for zuka user
+    tags: always
+    copy:
+      src: sudoer_zuka
+      dest: /etc/sudoers.d/zuka
+      owner: root
+      group: root
+      mode: 0440

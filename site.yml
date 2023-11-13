@@ -5,21 +5,30 @@
   pre_tasks:            # The tasks to run 
 
 # Centos
-  - name: Install Updates (CentOS)
+  - name: Update Repo (CentOS)
     tags: always
     dnf:
-      update_only: yes
       update_cache: yes
+    changed_when: false
     when: ansible_distribution == "CentOS"
 
 # Ubuntu
-  - name: Install Update (Ubuntu)
+  - name: Update Repo (Ubuntu)
     tags: always
     apt:
-      upgrade: dist
       update_cache: yes
+    changed_when: false
     when: ansible_distribution == "Ubuntu"
 
+- hosts: all
+  become: true
+  tasks:
+
+  - name: Create an sshkey to zuka user
+    tags: always
+    authorized_key:
+      user: zuka
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOXbwVjReKVrC18mlTzbOFu5Ncz6VlwcjoaKjNTeWRs+ Ansible"
 
 - hosts: web_servers
   become: true

@@ -392,3 +392,76 @@ node-5                     : ok=8    changed=2    unreachable=0    failed=0    s
 node-6                     : ok=4    changed=0    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0 
 ```
 > First we change a line on httpd.conf file the confirm that with register and restarted service on next task.
+
+## Create User
+15. With the task below we can create users using the "user" module.
+```yaml
+- hosts: all
+  become: true
+  tasks:
+  - name: Create zuka user
+    tags: always
+    user:
+      user: zuka
+      group: root 
+```
+```console
+ansible-playbook site.yml
+
+TASK [Create zuka user] ******************************************************************************************************************************************
+changed: [node-5]
+changed: [node-2]
+changed: [node-4]
+changed: [node-1]
+changed: [node-3]
+changed: [node-6]
+PLAY RECAP *******************************************************************************************************************************************************
+node-1                     : ok=7    changed=1    unreachable=0    failed=0    skipped=5    rescued=0    ignored=0   
+node-2                     : ok=7    changed=1    unreachable=0    failed=0    skipped=5    rescued=0    ignored=0   
+node-3                     : ok=6    changed=1    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+node-4                     : ok=6    changed=1    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+node-5                     : ok=9    changed=1    unreachable=0    failed=0    skipped=3    rescued=0    ignored=0   
+node-6                     : ok=6    changed=1    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0 
+```
+
+### Create SSH-KEY
+16. Create an ssh-key to an specific user, give it root acess at sudoers
+Modules:
+    - copy
+    - authorized_keys
+    - user
+
+```yaml
+  - name: Create an sshkey to zuka user
+    tags: always
+    authorized_key:
+      user: zuka
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOXbwVjReKVrC18mlTzbOFu5Ncz6VlwcjoaKjNTeWRs+ Ansible"
+
+  - name: add sudoers file for zuka user
+    tags: always
+    copy:
+      src: sudoer_zuka
+      dest: /etc/sudoers.d/zuka
+      owner: root
+      group: root
+      mode: 0440
+```
+```console
+TASK [add sudoers file for zuka user] ****************************************************************************************************************************
+changed: [node-1]
+changed: [node-5]
+changed: [node-2]
+changed: [node-4]
+changed: [node-3]
+changed: [node-6]
+TASK [add sudoers file for zuka user] ****************************************************************************************************************************
+changed: [node-1]
+changed: [node-5]
+changed: [node-2]
+changed: [node-4]
+changed: [node-3]
+changed: [node-6]
+
+```
+> now you can run playbooks with zuka user /or whatever name you want yo use.
