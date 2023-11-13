@@ -22,97 +22,25 @@
 
 - hosts: all
   become: true
-  tasks:
+  roles:
+    - base
 
-  - name: Create an sshkey to zuka user
-    tags: always
-    authorized_key:
-      user: zuka
-      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOXbwVjReKVrC18mlTzbOFu5Ncz6VlwcjoaKjNTeWRs+ Ansible"
+#- hosts: workstations
+#  become: true
+#  roles:
+#    - workstations
 
 - hosts: web_servers
   become: true
-  tasks:
-
-# Install WebServers packages
-
-  - name: update and install apache2, php package for Ubuntu      # Indicative Name
-    tags: apache,apache2,ubuntu
-    apt:                                 # Module APT
-      name:
-        - apache2   
-        - libapache2-mod-php5         # The package
-      state: latest  
-    when: ansible_distribution == 'Ubuntu'
-
-  - name: update and install httpd, php package for CentOS        # Indicative Name
-    tags: httpd, centos, apache
-    dnf:                                 # Module APT
-      name:
-        - httpd
-        - php                     # The package
-      state: latest 
-    when: ansible_distribution == 'CentOS'
-
-  - name: Start httpd (CENTOS)
-    tags: httpd, centos, apache
-    service:
-      name: httpd
-      state: started
-      enabled: yes
-    when: ansible_distribution == 'CentOS'
-
-  - name: Change Email Addres for admin
-    tags: apache, centos, httpd
-    lineinfile:
-      path: /etc/httpd/conf/httpd.conf
-      regexp: '^ServerAdmin'
-      line: ServerAdmin test@gmail.com'
-    when: ansible_distribution == 'CentOS'
-    register: httpd     # Simple stores a variable to use in the next task
-
-  - name: restart httpd (CENTOS)
-    tags: apache, centos, httpd
-    service:
-      name: httpd
-      state: restarted
-    when: httpd.changed  # VAriable from register httpd
-
-  - name: Copy Default html file for site
-    tags: httpd, centos, apache
-    copy:
-      src: default_site.html
-      dest: /var/www/html/index.html
-      owner: root
-      group: root
-      mode: 0644
-
-# Install MariaDB packages
+  roles:
+    - web_servers
 
 - hosts: db_servers
   become: true
-  tasks:
-
-  - name: Install MariDB package
-    tags: mariadb,db,centos
-    dnf: 
-      name: mariadb-server
-      state: latest
-    when: ansible_distribution ==  'CentOS'
-
-  - name: Install MariDB package
-    tags: mariadb,db,ubuntu
-    apt: 
-      name: mariadb-server
-      state: latest
-    when: ansible_distribution ==  'Ubuntu'
+  roles:
+    - db_servers
 
 - hosts: file_servers
   become: true
-  tasks:
-
-  - name: Install samba package
-    tags: samba
-    package: 
-      name: samba
-      state: latest
+  roles:
+    - file_servers

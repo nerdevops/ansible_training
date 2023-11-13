@@ -1,0 +1,5 @@
+- name: Create an sshkey to zuka user
+  tags: always
+  authorized_key:
+    user: zuka
+    key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOXbwVjReKVrC18mlTzbOFu5Ncz6VlwcjoaKjNTeWRs+ Ansible"

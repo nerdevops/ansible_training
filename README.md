@@ -465,3 +465,52 @@ changed: [node-6]
 
 ```
 > now you can run playbooks with zuka user /or whatever name you want yo use.
+
+### ROLES
+16. Now we're going to use roles to simplify our ansible-playbook since is full and not organized.
+```
+roles/
+├── base
+│   └── tasks
+│       └── main.yml
+├── db_servers
+│   └── tasks
+│       └── main.yml
+├── file_servers
+│   └── tasks
+│       └── main.yml
+├── web_servers
+│   ├── files
+│   │   ├── default_site.html
+│   │   └── sudoer_zuka
+│   └── tasks
+│       └── main.yml
+└── workstations
+    └── tasks
+        └── main.yml
+```
+>> Each role has it's own tasks contianing it's own main.yml
+>> If you have your tasks has to move or copy files you should put into the role it-self like web_servers role.
+
+- You define the roles as the examples bellow:
+```yaml
+- hosts: all
+  become: true
+  roles:
+    - base
+
+- hosts: web_servers
+  become: true
+  roles:
+    - web_servers
+
+- hosts: db_servers
+  become: true
+  roles:
+    - db_servers
+
+- hosts: file_servers
+  become: true
+  roles:
+    - file_servers
+```
