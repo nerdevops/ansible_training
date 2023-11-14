@@ -18,16 +18,9 @@
   lineinfile:
     path: /etc/httpd/conf/httpd.conf
     regexp: '^ServerAdmin'
-    line: ServerAdmin test@gmail.com'
+    line: ServerAdmin test@gmail.c.net'
   when: ansible_distribution == 'CentOS'
-  register: httpd     # Simple stores a variable to use in the next task
-
-- name: restart httpd (CENTOS)
-  tags: apache, httpd
-  service:
-    name: "{{ apache_service }}"
-    state: restarted
-  when: httpd.changed  # VAriable from register httpd
+  notify: restart_apache     # Simple add an Handler
 
 - name: Copy Default html file for site
   tags: httpd, centos, apache
