@@ -547,12 +547,12 @@ ansible-playbook all -m ping
 mkdir host_vars
 for i in {1..6};do touch node-$i.yml;done
 ls -lrth
--rw-r--r-- 1 jrmagalhaes jrmagalhaes 0 Nov 13 18:29 node-1.yml
--rw-r--r-- 1 jrmagalhaes jrmagalhaes 0 Nov 13 18:29 node-6.yml
--rw-r--r-- 1 jrmagalhaes jrmagalhaes 0 Nov 13 18:29 node-5.yml
--rw-r--r-- 1 jrmagalhaes jrmagalhaes 0 Nov 13 18:29 node-4.yml
--rw-r--r-- 1 jrmagalhaes jrmagalhaes 0 Nov 13 18:29 node-3.yml
--rw-r--r-- 1 jrmagalhaes jrmagalhaes 0 Nov 13 18:29 node-2.yml
+-rw-r--r-- 1 nerdevops nerdevops 0 Nov 13 18:29 node-1.yml
+-rw-r--r-- 1 nerdevops nerdevops 0 Nov 13 18:29 node-6.yml
+-rw-r--r-- 1 nerdevops nerdevops 0 Nov 13 18:29 node-5.yml
+-rw-r--r-- 1 nerdevops nerdevops 0 Nov 13 18:29 node-4.yml
+-rw-r--r-- 1 nerdevops nerdevops 0 Nov 13 18:29 node-3.yml
+-rw-r--r-- 1 nerdevops nerdevops 0 Nov 13 18:29 node-2.yml
 ```
 - Centos vars for apache:
 ```yaml
