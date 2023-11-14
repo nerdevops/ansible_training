@@ -13,34 +13,40 @@ Basic Ansible Learning Project
     - Virtualbox/VMware
     - WSL / Native Linux / Mac
 
+### Startup
 1. First create the VM's
 ```console
-cd /ubuntu
+cd ubuntu/
+vagrant up
+cd centos/
 vagrant up
 ```
-
-1. Create ssh-key to login on the target-machines
+### SSH-key to acesso the nodes
+2. Create ssh-key to login on the target-machines
 ```console
 ssh-keygen -t ed25519 -C "Ansible" -f ~/.ssh/ansible
 ```
-
-1. Edit hosts file of the "ManagerHost" In my case WLS
+# Edit hosts file to ssh via hostname instead ip
+3. Edit hosts file of the "ManagerHost" In my case WLS
 ```
 # Ansible
+192.168.1.126 node-6
+192.168.1.125 node-5
+192.168.1.124 node-4
 192.168.1.123 node-3
 192.168.1.122 node-2
 192.168.1.121 node-1
 ```
-
-1. Install ansible on Controler machine and add ssh on each of the machines
+### Install Ansible 
+4. Install ansible on Controler machine and add ssh on each of the machines
 ```console
 apt install ansible -y &&
 ssh-copy-id -i ~/.ssh/ansible.pub vagrant@node-1 &&
 ssh-copy-id -i ~/.ssh/ansible.pub vagrant@node-2 &&
 ssh-copy-id -i ~/.ssh/ansible.pub vagrant@node-3 &&
 ```
-
-1. First ANSIBLE command
+### Ansible Ping
+5. First ANSIBLE command
 ```console
 ansible all --key-file ~/.ssh/ansible -i inventory -m ping -u vagrant
 ```
@@ -68,12 +74,15 @@ node-1 | SUCCESS => {
     "ping": "pong"
 }
 ```
+
+### Ansible Gather Facts
 6. Ansible gather_facts
 ```console
 ansible all -m gather_facts --limit node-1
 ```
 > This module is automatically called by playbooks to gather useful variables about remote hosts that can be used in playbooks.
 
+### ADHOC commands
 7. ansible adhoc commands
 > An Ansible ad hoc command uses the /usr/bin/ansible command-line tool to automate a single task on one or more managed nodes.
 "Privilege permitions for exec commands on target machines.
@@ -148,6 +157,7 @@ ansible all -m apt -a name=vim-nox --become
 ansible all -m apt -a "upgrade=dist" --become
 ```
 
+### Introduction to Ansible Playbooks
 8. Playbooks
 > A playbook is a multiple-machine deployment system, reusable and repeatable
 ```console
@@ -205,7 +215,7 @@ node-4
 node-5
 node-6
 ```
-
+### Group tasks
 10. Now is possible to group tasks 
 ```console
 ansible db_servers -m ping
