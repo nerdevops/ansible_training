@@ -527,3 +527,48 @@ ansible-playbook all -m ping
     - name: This is a ping to all Hosts
       ping:
 ```
+
+### Hosts Variables the secret for {{ variable }}
+18. Now we can create hosts variables
+```console
+mkdir host_vars
+for i in {1..6};do touch node-$i.yml;done
+ls -lrth
+-rw-r--r-- 1 jrmagalhaes jrmagalhaes 0 Nov 13 18:29 node-1.yml
+-rw-r--r-- 1 jrmagalhaes jrmagalhaes 0 Nov 13 18:29 node-6.yml
+-rw-r--r-- 1 jrmagalhaes jrmagalhaes 0 Nov 13 18:29 node-5.yml
+-rw-r--r-- 1 jrmagalhaes jrmagalhaes 0 Nov 13 18:29 node-4.yml
+-rw-r--r-- 1 jrmagalhaes jrmagalhaes 0 Nov 13 18:29 node-3.yml
+-rw-r--r-- 1 jrmagalhaes jrmagalhaes 0 Nov 13 18:29 node-2.yml
+```
+- Centos vars for apache:
+```yaml
+apache_package_name:  httpd
+apache_service: httpd
+php_package_name: php
+```
+- Ubuntu vars:
+```yaml
+apache_package_name:  apache2
+apache_service: apache2
+php_package_name: libapache2-mod-php
+```
+
+- Now it's easy to call the as variables on tasks main.yml of web_servers
+```yaml
+- name: update and install apache2, php package for Ubuntu      # Indicative Name
+  tags: apache,httpd,php
+  package:                                 # Module APT
+    name:
+      - "{{ apache_package_name }}" 
+      - "{{ php_package_name }}"         # The package
+    state: latest
+
+- name: Start httpd (CENTOS)
+  tags: apache,httpd
+  service:
+    name: "{{ apache_service }}"
+    state: started
+    enabled: yes
+```
+> Note: In brackets we have our variables witch we already defined on host_vars files.

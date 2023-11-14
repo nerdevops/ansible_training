@@ -1,26 +1,18 @@
 - name: update and install apache2, php package for Ubuntu      # Indicative Name
-  tags: apache,apache2,ubuntu
-  apt:                                 # Module APT
+  tags: apache,httpd,php
+  package:                                 # Module APT
     name:
-      - apache2   
-      - libapache2-mod-php5         # The package
-    state: latest  
-  when: ansible_distribution == 'Ubuntu'
-- name: update and install httpd, php package for CentOS        # Indicative Name
-  tags: httpd, centos, apache
-  dnf:                                 # Module APT
-    name:
-      - httpd
-      - php                     # The package
-    state: latest 
-  when: ansible_distribution == 'CentOS'
+      - "{{ apache_package_name }}" 
+      - "{{ php_package_name }}"         # The package
+    state: latest
+
 - name: Start httpd (CENTOS)
-  tags: httpd, centos, apache
+  tags: apache,httpd
   service:
-    name: httpd
+    name: "{{ apache_service }}"
     state: started
     enabled: yes
-  when: ansible_distribution == 'CentOS'
+
 - name: Change Email Addres for admin
   tags: apache, centos, httpd
   lineinfile:
@@ -29,12 +21,14 @@
     line: ServerAdmin test@gmail.com'
   when: ansible_distribution == 'CentOS'
   register: httpd     # Simple stores a variable to use in the next task
+
 - name: restart httpd (CENTOS)
-  tags: apache, centos, httpd
+  tags: apache, httpd
   service:
-    name: httpd
+    name: "{{ apache_service }}"
     state: restarted
   when: httpd.changed  # VAriable from register httpd
+
 - name: Copy Default html file for site
   tags: httpd, centos, apache
   copy:
