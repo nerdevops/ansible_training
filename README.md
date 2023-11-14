@@ -44,6 +44,9 @@ apt install ansible -y &&
 ssh-copy-id -i ~/.ssh/ansible.pub vagrant@node-1 &&
 ssh-copy-id -i ~/.ssh/ansible.pub vagrant@node-2 &&
 ssh-copy-id -i ~/.ssh/ansible.pub vagrant@node-3 &&
+ssh-copy-id -i ~/.ssh/ansible.pub vagrant@node-4 &&
+ssh-copy-id -i ~/.ssh/ansible.pub vagrant@node-5 &&
+ssh-copy-id -i ~/.ssh/ansible.pub vagrant@node-6 &&
 ```
 ### Ansible Ping
 5. First ANSIBLE command
