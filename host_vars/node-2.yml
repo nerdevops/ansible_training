@@ -1,3 +1,5 @@
 apache_package_name:  apache2
 apache_service: apache2
 php_package_name: libapache2-mod-php5
+html_host: "node-2"
+html_template: default_site.html.j2

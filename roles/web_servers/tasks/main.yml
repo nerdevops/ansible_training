@@ -24,8 +24,8 @@
 
 - name: Copy Default html file for site
   tags: httpd, centos, apache
-  copy:
-    src: default_site.html
+  template:                            # Use to be copy, let's test template module
+    src: "{{ html_template }}"
     dest: /var/www/html/index.html
     owner: root
     group: root

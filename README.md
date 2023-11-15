@@ -585,3 +585,70 @@ php_package_name: libapache2-mod-php
     enabled: yes
 ```
 > Note: In brackets we have our variables witch we already defined on host_vars files.
+
+### Implementing Templates
+20. Templates allow us to modify any variable.
+
+- Each webserver host_variables files must contain the following lines to use as variables:
+```
+html_host: "node-1"     
+html_template: default_site.html.j2
+```
+> note: # Change for the other ondes, node-2 and node-5
+
+- Then create the templates folder
+```console
+cd roles/web_severs
+mkdir templates
+cp ../files/default_site.html default_site.html.j2
+```
+
+- Insert the variable:
+```html
+<html>
+<title>
+    Website Teste
+</title>
+<body>
+    <p> Ansible is awesome on host "{{ html_host }}"</p>
+</body>
+</html>
+```
+- Now lets change the task to contain templates instead of copy module.
+```yaml
+- name: Copy Default html file for site
+  tags: httpd, centos, apache
+  template:                            # Use to be copy, let's test template module
+    src: "{{ html_template }}"
+    dest: /var/www/html/index.html
+    owner: root
+    group: root
+    mode: 0644
+```
+> We have the ""{{ html_template }}"" Variable and "{{ html_host }}" defined and used.
+
+- Running playbook:
+```console
+ansible-playbook site.yml
+
+TASK [web_servers : Copy Default html file for site] *********************************************************************************
+changed: [node-5]
+changed: [node-2]
+changed: [node-1]
+PLAY RECAP ***************************************************************************************************************************
+node-1                     : ok=8    changed=1    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0
+node-2                     : ok=8    changed=1    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0
+node-3                     : ok=6    changed=0    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0
+node-4                     : ok=6    changed=0    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0
+node-5                     : ok=9    changed=1    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0
+node-6                     : ok=6    changed=0    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0
+```
+- Before:
+ **Cenario**
+     ![The Cenario](/img/cenario.png)
+
+- After:
+ **Cenario**
+     ![The Cenario](/img/template.png)
+
+>> That's how we use tamplates to change unic values.
