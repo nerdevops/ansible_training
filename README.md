@@ -645,7 +645,7 @@ node-6                     : ok=6    changed=0    unreachable=0    failed=0    s
 ```
 - Before:
  **Cenario**
-     ![The Cenario](/img/cenario.png)
+     ![The Cenario](/img/image.png)
 
 - After:
  **Cenario**
